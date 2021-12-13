@@ -1,72 +1,84 @@
 import React from "react";
 import env from "react-dotenv";
-import {loadStripe} from "@stripe/stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 import "./App.css";
 
 const stripePromise = loadStripe(env.PUBLIC_KEY);
 
-export default function App () {
+const { createProxyMiddleware } = require("http-proxy-middleware");
 
+module.exports = function (app) {
+  app.use(
+    createProxyMiddleware("/api/**", { target: "http://localhost:5000" })
+  );
+  app.use(
+    createProxyMiddleware("/otherApi/**", { target: "http://localhost:5000" })
+  );
+};
+
+export default function App() {
   const handleClick = async () => {
-
     const products = [
       {
-          name: "producto1",
-          quantity: "5",
-          price: "5000",
+        name: "producto1",
+        quantity: "5",
+        price: "5000",
       },
       {
-          name: "producto2",
-          quantity: "3",
-          price: "6000",
+        name: "producto2",
+        quantity: "3",
+        price: "6000",
       },
       {
-          name: "producto1",
-          quantity: "2",
-          price: "4000",
-      }
-    ]
+        name: "producto1",
+        quantity: "2",
+        price: "4000",
+      },
+    ];
 
     const productsObject = {
-      products: products
-    }
+      products: products,
+    };
 
-    const stripe = await stripePromise
+    const stripe = await stripePromise;
 
-    console.log(productsObject)
+    console.log(productsObject);
 
     let options = {
       body: JSON.stringify(productsObject),
-      method:'POST', 
+      method: "POST",
       headers: {
-        'Content-Type': 'aplication/json'
-      }
-    }
+        "Content-Type": "aplication/json",
+      },
+    };
 
-    const response = await fetch(`http://localhost:5050/create-checkout-session`, options)
-    console.log(response)
+    const response = await fetch(
+      `https://shopingxd.herokuapp.com/create-checkout-session`,
+      options
+    );
+    console.log(response);
 
     const session = await response.json();
 
-    console.log(session)
+    console.log(session);
 
     const result = await stripe.redirectToCheckout({
-      sessionId: session.id
-    })
+      sessionId: session.id,
+    });
 
-    if(result.error) {
-      console.log('xd')
+    if (result.error) {
+      console.log("xd");
     }
-  }
+  };
 
-  return(
+  return (
     <div>
-      <button role='link' onClick={handleClick}>Pagar ahora</button>
+      <button role="link" onClick={handleClick}>
+        Pagar ahora
+      </button>
     </div>
-  )
+  );
 }
-
-
 
 // const ProductDisplay = () => (
 //   <section>

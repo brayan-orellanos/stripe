@@ -20,7 +20,7 @@ app.use((req, res, next) => {
   next();
 });
 
-const DOMAIN = "http://localhost:3000";
+const DOMAIN = "https://shopingxd.herokuapp.com/";
 
 app.post("/create-checkout-session", async (req, res) => {
   let products = req.body.products;
