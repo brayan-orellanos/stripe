@@ -5,17 +5,6 @@ import "./App.css";
 
 const stripePromise = loadStripe(env.PUBLIC_KEY);
 
-const { createProxyMiddleware } = require("http-proxy-middleware");
-
-module.exports = function (app) {
-  app.use(
-    createProxyMiddleware("/api/**", { target: "http://localhost:5000" })
-  );
-  app.use(
-    createProxyMiddleware("/otherApi/**", { target: "http://localhost:5000" })
-  );
-};
-
 export default function App() {
   const handleClick = async () => {
     const products = [
